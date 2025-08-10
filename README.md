@@ -1,4 +1,4 @@
-# Synthetic Threat Intelligence Generator for Defender XDR ([Upload API](https://learn.microsoft.com/en-us/azure/sentinel/stix-objects-api))
+# Synthetic Threat Intelligence for Defender XDR ([Upload API](https://learn.microsoft.com/en-us/azure/sentinel/stix-objects-api))
 ## Azure Container Instance Deployment
 
 This solution generates synthetic STIX/TAXII v2.1 compliant threat intelligence and automatically uploads it to Microsoft Sentinel via REST API, designed specifically for Azure Container Instances.
