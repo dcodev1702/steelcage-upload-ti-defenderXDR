@@ -243,10 +243,7 @@ function Test-TI2UploadAPI {
         Write-Error "Failed to parse JSON file: $_"
         return
     }
-    #if (-not $jsonContent.indicators) {
-    #    Write-Error "JSON file does not contain an 'indicators' array."
-    #    return
-    #}
+  
     Write-Host "✓ Loaded $($jsonContent.stixobjects.Count) indicator(s) from JSON file" -ForegroundColor Green
 
     # Prepare request bodies from JSON
@@ -254,15 +251,8 @@ function Test-TI2UploadAPI {
         sourcesystem = $jsonContent.sourcesystem
         stixobjects  = $jsonContent.stixobjects
     }
-    <#
-    $requestBodyWithValue = @{
-        sourcesystem = $jsonContent.sourcesystem
-        stixobjects  = $jsonContent.stixobjects
-    }
-    #>
-
+    
     Write-Host "Test Objects (Microsoft Format):" -ForegroundColor Yellow
-    #$testObjects | ConvertTo-Json -Depth 10 | Write-Host -ForegroundColor Gray
 
     # Prepare headers
     $headers = @{
@@ -295,34 +285,6 @@ function Test-TI2UploadAPI {
             Body = $requestBodyWithIndicators  # Using "indicators" as the JSON array name
             Headers = $headers
         }
-        <#
-        @{
-            Name = "V2 Direct Sentinel API (Legacy - with 'indicators' array)"
-            Url = "$sentinelApiUrl/workspaces/$workspaceId/threatintelligenceindicators:upload?api-version=2022-07-01"
-            Body = $requestBodyWithIndicators  # Using "indicators" as the JSON array name
-            Headers = $headers
-        }
-        #>
-    }
-    
-    # Add Management API endpoint if we have the required variables
-    <#
-    if ($subscriptionId -and $resourceGroup -and $workspaceName) {
-        $testConfigs += @{
-            Name = "V2 Management API Upload Endpoint (with 'indicators' array)"
-            Url = "$managementUrl/subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.OperationalInsights/workspaces/$workspaceName/providers/Microsoft.SecurityInsights/upload?api-version=$apiVersion"
-            Body = $requestBodyWithIndicators
-            Headers = $headers
-        }
-        
-        $testConfigs += @{
-            Name = "V2 Management API Upload Endpoint (with 'value' array)"
-            Url = "$managementUrl/subscriptions/$subscriptionId/resourceGroups/$resourceGroup/providers/Microsoft.OperationalInsights/workspaces/$workspaceName/providers/Microsoft.SecurityInsights/upload?api-version=$apiVersion"
-            Body = $requestBodyWithValue
-            Headers = $headers
-        }
-    }
-    #>
     
     if ($testConfigs.Count -eq 0) {
         Write-Host "❌ Error: No endpoints to test. Missing required variables:" -ForegroundColor Red
