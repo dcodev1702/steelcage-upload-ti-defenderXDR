@@ -13,7 +13,7 @@ This solution generates synthetic STIX/TAXII v2.1 compliant threat intelligence 
 ### Deployment Files
 - **`Dockerfile`** - Container configuration optimized for ACI
 - **`deploy-to-aci.ps1`** - PowerShell script to deploy to Azure Container Instances
-- **`build-local.ps1`** - Local testing script before ACI deployment
+- **`provision-local-container.ps1`** - Local testing script before ACI deployment
 - **`.env`** - Environment variables with Azure credentials (already exists)
 
 ## 🚀 Quick Start
@@ -31,20 +31,20 @@ This solution generates synthetic STIX/TAXII v2.1 compliant threat intelligence 
 Test the solution locally before deploying to Azure:
 
 ```powershell
-# Build and test locally
-.\build-local.ps1
+# Build, Provision, and Test locally
+.\provision-local-container.ps1
 
 # Run a single test cycle
-.\build-local.ps1 -RunOnce
+.\provision-local-container.ps1 -RunOnce
 
 # Run continuously (like it will in ACI)
-.\build-local.ps1 -Run
+.\provision-local-container.ps1 -Run
 
 # Check logs
-docker logs -f synthetic-ti-generator-local
+docker logs -f steelcage-xgen-ti-platform-local
 
 # Stop local container
-.\build-local.ps1 -Stop
+.\provision-local-container.ps1 -Stop
 ```
 
 ### Step 2: Deploy to Azure Container Instance
@@ -135,19 +135,19 @@ az container attach --resource-group secops --name synthetic-ti-generator
 ### Execute Commands in Container
 ```bash
 # Open PowerShell session in running container
-az container exec --resource-group secops --name synthetic-ti-generator --exec-command "pwsh"
+az container exec --resource-group secops --name steelcage-xgen-ti-platform-aci --exec-command "pwsh"
 
 # Run single generation test
-az container exec --resource-group secops --name synthetic-ti-generator --exec-command "pwsh -Command './Generate-SyntheticSTIX.ps1 -IndicatorCount 5'"
+az container exec --resource-group secops --name steelcage-xgen-ti-platform-aci --exec-command "pwsh -Command './Generate-SyntheticSTIX.ps1 -IndicatorCount 5'"
 ```
 
 ### Check Container Status
 ```bash
 # Get container details
-az container show --resource-group secops --name synthetic-ti-generator --query instanceView.state
+az container show --resource-group secops --name steelcage-xgen-ti-platform-aci --query instanceView.state
 
 # Get all details
-az container show --resource-group secops --name synthetic-ti-generator
+az container show --resource-group secops --name steelcage-xgen-ti-platform-aci
 ```
 
 ## 🎯 Generated Threat Intelligence
@@ -172,10 +172,10 @@ Each cycle generates realistic STIX objects including:
 ### Container Won't Start
 ```bash
 # Check container events
-az container show --resource-group secops --name synthetic-ti-generator --query events
+az container show --resource-group secops --name steelcage-xgen-ti-platform-aci --query events
 
 # Check detailed status
-az container show --resource-group secops --name synthetic-ti-generator
+az container show --resource-group secops --name steelcage-xgen-ti-platform-aci
 ```
 
 ### Authentication Issues
@@ -192,10 +192,10 @@ az container show --resource-group secops --name synthetic-ti-generator
 ### Container Keeps Restarting
 ```bash
 # Check logs for errors
-az container logs --resource-group secops --name synthetic-ti-generator --tail 50
+az container logs --resource-group secops --name steelcage-xgen-ti-platform-aci --tail 50
 
 # Verify image is in ACR
-az acr repository show --name youracr --image synthetic-ti-generator:latest
+az acr repository show --name youracr --image steelcage-xgen-ti-platform:latest
 ```
 
 ## 🧹 Maintenance
@@ -210,22 +210,22 @@ az acr repository show --name youracr --image synthetic-ti-generator:latest
 ### Clean Up Resources
 ```bash
 # Delete container instance
-az container delete --resource-group secops --name synthetic-ti-generator --yes
+az container delete --resource-group secops --name steelcage-xgen-ti-platform-aci --yes
 
 # Delete image from ACR (optional)
-az acr repository delete --name youracr --image synthetic-ti-generator --yes
+az acr repository delete --name youracr --image steelcage-xgen-ti-platform --yes
 ```
 
 ### Manual Operations
 ```bash
 # Restart container
-az container restart --resource-group secops --name synthetic-ti-generator
+az container restart --resource-group secops --name steelcage-xgen-ti-platform-aci
 
 # Stop container
-az container stop --resource-group secops --name synthetic-ti-generator
+az container stop --resource-group secops --name steelcage-xgen-ti-platform-aci
 
 # Start container
-az container start --resource-group secops --name synthetic-ti-generator
+az container start --resource-group secops --name steelcage-xgen-ti-platform-aci
 ```
 
 ## 🔐 Security Considerations
@@ -240,8 +240,8 @@ az container start --resource-group secops --name synthetic-ti-generator
 ## 📋 Cost Optimization
 
 Azure Container Instances pricing is based on:
-- **CPU**: 0.5 cores allocated
-- **Memory**: 0.5 GB allocated
+- **CPU**: 1.0 cores allocated
+- **Memory**: 1.5 GB allocated
 - **Execution time**: Continuous
 
 To reduce costs:
