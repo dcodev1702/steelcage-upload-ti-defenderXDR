@@ -1,5 +1,5 @@
-# build-local.ps1
-# Build and run the container locally for testing before ACI deployment
+# provision-local-container.ps1
+# Build, Provision, and run a docker container locally for testing before ACI deployment
 
 [CmdletBinding()]
 param (
